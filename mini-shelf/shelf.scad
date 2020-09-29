@@ -26,7 +26,7 @@ holeThickness = pegThickness + tolerance;
 
 repeatWidth = (unitWidth +  (2 * wallThickness));
 
-wallHeight = (heightInUnits * (unitHeight + wallThickness));
+wallHeight = (heightInUnits * (unitHeight + wallThickness)) - wallThickness;
 wallWidth = widthInUnits * repeatWidth;
 wallDepth = unitDepth + wallThickness;
 
