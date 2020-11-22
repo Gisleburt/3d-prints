@@ -17,7 +17,7 @@ module noop() {}
 
 tolerance = 0.5;
 wallThickness = 4; // Do not make less than 2
-pegThickness = 2;
+pegThickness = wallThickness / 2;
 holeThickness = pegThickness + tolerance;
 
 // x = height
@@ -28,14 +28,14 @@ repeatWidth = (unitWidth +  (2 * wallThickness));
 
 wallHeight = (heightInUnits * (unitHeight + wallThickness)) - wallThickness;
 wallWidth = widthInUnits * repeatWidth;
-wallDepth = unitDepth + wallThickness;
+wallDepth = unitDepth;
 
 module peg() {
     color([0,1,0])
     cube([
         pegThickness,
         pegThickness,
-        wallDepth * 0.8,
+        (wallDepth + wallThickness) * 0.8 - tolerance,
     ]);
 }
 
@@ -73,7 +73,7 @@ module description() {
            -tolerance
         ])
         linear_extrude(pegThickness+tolerance)
-            text(
+            text( 
                 str(
                     "H:", unitHeight, ",",
                     "W:", unitWidth, ",",
@@ -89,35 +89,36 @@ module description() {
 
 module wall() {
     color([1,0,0])
-    translate([
-        wallThickness - tolerance,
-        0,
-        wallThickness - tolerance,
-    ])
     cube([
         wallHeight + tolerance,
         wallThickness,
-        wallDepth + tolerance,
+        wallDepth + wallThickness,
     ]);
     
     
     translate([
-        wallHeight + wallThickness - tolerance,
-        (wallThickness / 2) - (pegThickness / 2),
-        0.1* wallDepth + wallThickness,
+        wallHeight,
+        wallThickness - pegThickness,
+        (wallDepth + wallThickness) * 0.1 - (tolerance/2),
     ])
     peg();
 }
 
 module left_wall() {
+    translate([
+        wallThickness - tolerance,
+        0,
+        0,
+    ])
     wall();
 }
 
 module right_wall() {
+    rotate([180, 0, 0])
     translate([
-        0, 
-        widthInUnits * (unitWidth + (2*wallThickness)) - wallThickness,
-        0
+        wallThickness - tolerance, 
+        (-unitWidth - (2*wallThickness)) * widthInUnits ,
+        -unitDepth - wallThickness
     ])
     wall();
 }
@@ -125,8 +126,8 @@ module right_wall() {
 module left_hole() {
     translate([
         -tolerance,
-        (wallThickness - holeThickness) / 2,
-        0.1 * wallDepth + wallThickness,
+        (wallThickness / 2) - (tolerance/2),
+        (wallDepth + wallThickness) * 0.1 + (tolerance/2),
     ])
     hole();
 }
@@ -134,8 +135,8 @@ module left_hole() {
 module right_hole() {
     translate([
         -tolerance, 
-        repeatWidth - wallThickness / 2 - holeThickness / 2,
-        0.1 * wallDepth + wallThickness,
+        repeatWidth - wallThickness - (tolerance/2),
+        (wallDepth + wallThickness) * 0.1 + (tolerance/2),
     ])
     hole();
 }
@@ -170,7 +171,7 @@ module shelf() {
 
 rotate([
     0,
-    90,
+    -90,
     0,
 ])
 shelf();
